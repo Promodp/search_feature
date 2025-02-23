@@ -4,6 +4,7 @@ import useFetchApi from "../hooks/useFetchApi";
 import useDebounce from "../hooks/useDebounce";
 import { filterResults, suggestedWords } from "../utils/helper"; 
 import SearchResult from "./searchResult";
+import NoResultsMessage from './noResultMessage';
 import "./search.css";
 
 const Search = () => {
@@ -84,9 +85,7 @@ const Search = () => {
                             </li>
                         ))
                     ) : (
-                        <li className="no-results">
-                            No results found. Try: {suggestedWords.join(", ")}
-                        </li>
+                     <NoResultsMessage/>
                     )}
                 </ul>
             )}

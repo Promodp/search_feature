@@ -80,6 +80,7 @@
   color: var(--text-secondary);
   font-style: italic;
   text-align: center;
+  overflow: hidden ;
 }
 
 .search-results {

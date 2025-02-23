@@ -1,4 +1,6 @@
 import React from "react";
+import NoResultsMessage from './noResultMessage';
+
 import "./search.css";
 
 const SearchResult = ({ searchResults, suggestedWords }) => {
@@ -14,9 +16,7 @@ const SearchResult = ({ searchResults, suggestedWords }) => {
                     </div>
                 ))
             ) : (
-                <p className="no-results-message">
-                    No results found. Try a different keyword {suggestedWords.join(", ")}!
-                </p>
+                <NoResultsMessage/>
             )}
         </div>
     );
