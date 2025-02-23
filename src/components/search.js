@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import { FaSearch } from "react-icons/fa"; 
 import useFetchApi from "../hooks/useFetchApi";
 import useDebounce from "../hooks/useDebounce";
+import { filterResults, suggestedWords } from "../utils/helper"; 
+import SearchResult from "./searchResult";
 import "./search.css";
 
 const Search = () => {
@@ -9,7 +12,6 @@ const Search = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isSearchTriggered, setIsSearchTriggered] = useState(false);
     const dropdownRef = useRef(null);
-    const suggestedWords = ["quo", "qui", "fugit", "quia", "quod"];
 
     const debouncedQuery = useDebounce(query, 300);
     const { data: typeaheadResults } = useFetchApi(debouncedQuery, 3, true);
@@ -25,7 +27,7 @@ const Search = () => {
         setShowDropdown(false);
     };
 
-    const handleSelect = (selected) => {
+    const handleSelect = () => {
         setQuery("");
         setShowDropdown(false);
         setSearchResults(buttonResults.map((res) => res.item));
@@ -43,23 +45,15 @@ const Search = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [handleClickOutside]);
 
-    const filteredResults = typeaheadResults
-        .map((result) => {
-            if (result.name.toLowerCase().startsWith(debouncedQuery.toLowerCase())) {
-                return { displayText: result.name, ...result };
-            } else if (result.email.toLowerCase().startsWith(debouncedQuery.toLowerCase())) {
-                return { displayText: result.email, ...result };
-            } else if (result.body.toLowerCase().startsWith(debouncedQuery.toLowerCase())) {
-                return { displayText: result.body, ...result };
-            }
-            return null;
-        })
-        .filter(Boolean);
+    const filteredResults = filterResults(typeaheadResults, debouncedQuery);
 
     return (
         <div className="search-container" ref={dropdownRef}>
             <h2 className="search-heading">Type words like {suggestedWords.join(", ")} to see magic</h2>
-            <div className="search-box">
+            <div className={`search-box ${showDropdown ? "dropdown-open" : ""}`}>
+                <div className="search-icon">
+                    <FaSearch />
+                </div>
                 <input
                     type="text"
                     className="search-input"
@@ -83,8 +77,9 @@ const Search = () => {
                             <li
                                 key={`${result.id}-${index}`}
                                 className="result-item"
-                                onClick={() => handleSelect(result)}
+                                onClick={() => handleSelect()}
                             >
+                                <FaSearch className="list-icon" />
                                 {result.displayText}
                             </li>
                         ))
@@ -97,20 +92,7 @@ const Search = () => {
             )}
 
             {isSearchTriggered && (
-                <div className="search-results">
-                    <h3>Search Results</h3>
-                    {searchResults.length > 0 ? (
-                        searchResults.map((item) => (
-                            <div key={item.id} className="search-item">
-                                <p><strong>Name:</strong> {item.name}</p>
-                                <p><strong>Email:</strong> {item.email}</p>
-                                <p><strong>Description:</strong> {item.body.length > 64 ? item.body.substring(0, 64) + "..." : item.body}</p>
-                            </div>
-                        ))
-                    ) : (
-                        <p className="no-results-message">No results found. Try a different keyword {suggestedWords.join(", ")}!</p>
-                    )}
-                </div>
+                <SearchResult searchResults={searchResults} suggestedWords={suggestedWords} />
             )}
         </div>
     );
