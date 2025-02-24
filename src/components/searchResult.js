@@ -1,6 +1,5 @@
 import React from "react";
 import NoResultsMessage from './noResultMessage';
-
 import "./search.css";
 
 const SearchResult = ({ searchResults, suggestedWords }) => {

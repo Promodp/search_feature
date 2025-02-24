@@ -20,3 +20,4 @@ In the project directory, you can run:
     This improves performance as well by reducing frequent api call
 4. Includes color palatted that can be accessed accross the project.
     Example:  --primary: #4A90E2; ---> which can be used as: var(--primary);
+5. Modularization of the components(following DRY principle)

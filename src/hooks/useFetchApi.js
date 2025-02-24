@@ -11,10 +11,8 @@ const useFetchApi = (query, minLength = 3, typeahead = false) => {
             setData([]);
             return;
         }
-
         setLoading(true);
         setError(null);
-
         axios
             .get(`https://jsonplaceholder.typicode.com/comments?q=${query}`)
             .then((response) => {
